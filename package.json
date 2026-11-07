@@ -1,0 +1,35 @@
+{
+  "name": "relaypay",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Receipts for AI-agent purchases: owner-approved, SHA-256 sealed, carried by PayPal, verified in disputes.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test \"tests/*.test.ts\"",
+    "check": "npm run typecheck && npm test",
+    "seed": "node scripts/seed.mjs",
+    "reset": "node scripts/reset.mjs"
+  },
+  "dependencies": {
+    "ag-grid-community": "^32.0.0",
+    "ag-grid-react": "^32.3.9",
+    "next": "^15.1.0",
+    "pdf-lib": "^1.17.1",
+    "pg": "^8.23.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.23.1",
+    "@types/react": "^19.0.0",
+    "typescript": "^5.7.0"
+  }
+}

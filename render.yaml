@@ -1,0 +1,41 @@
+# Storage: set DATABASE_URL to a Postgres connection string you own (Neon's free
+# tier recommended). Render's free Postgres expires after about 30 days, which
+# would fall inside the judging window.
+services:
+  - type: web
+    name: relaypay
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: PAYPAL_ENVIRONMENT
+        value: sandbox
+      - key: PAYPAL_CLIENT_ID
+        sync: false
+      - key: PAYPAL_CLIENT_SECRET
+        sync: false
+      - key: PAYPAL_WEBHOOK_ID
+        sync: false
+      - key: NEXT_PUBLIC_BASE_URL
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: ALLOW_SIMULATOR
+        value: "false"
+      - key: LLM_API_KEY
+        sync: false
+      - key: LLM_BASE_URL
+        value: https://api.subconscious.dev/v1
+      - key: LLM_MODEL
+        value: subconscious/glm-5.3-marathon
+      - key: SANDBOX_BUYER_EMAIL
+        sync: false
+      - key: CHANNEL3_API_KEY
+        sync: false
+      - key: ZAPIER_WEBHOOK_URL
+        sync: false
+      - key: ALLOW_LIVE
+        value: "false"
+      - key: ALLOW_VAULT_RESET
+        value: "false"
