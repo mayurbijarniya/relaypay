@@ -134,7 +134,7 @@ The agents never hold PayPal credentials and never move money. Live PayPal is re
 
 Requires Node 20+ (Node 22.18+ for `npm test`). No database or webhook needed locally.
 
-1. `git clone [paste GitHub repo URL here] && cd relaypay`
+1. `git clone https://github.com/mayurbijarniya/relaypay.git && cd relaypay`
 2. `cp .env.example .env` and fill in `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET` (sandbox), `LLM_API_KEY` and
    `NEXT_PUBLIC_BASE_URL=http://localhost:3000`. The sandbox app needs **Save payment methods** (Vault) enabled.
 3. `npm install` then `npm run dev` → http://localhost:3000 (landing page) and http://localhost:3000/app (the console)
