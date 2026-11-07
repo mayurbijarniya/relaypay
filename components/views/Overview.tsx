@@ -5,7 +5,7 @@ import { Button, Card, CardHeader, EmptyState, Pill } from "@/components/ui";
 import { ActorMark, BrandIcon, ChatHead, Lit, ProductTile, Window } from "@/components/kit";
 import { OrderThread } from "@/components/OrderThread";
 import { IconArrowRight, IconCheck, IconList, IconPlay, IconShield } from "@/components/icons";
-import { ACTOR_LABEL, eventLabel, money, timeAgo, type AnyRecord } from "@/lib/format";
+import { ACTOR_LABEL, eventLabel, money, needsDecision, timeAgo, type AnyRecord } from "@/lib/format";
 import type { RelayPay } from "@/components/useRelayPay";
 import type { View } from "@/components/views/types";
 
@@ -101,7 +101,7 @@ export function OverviewView({ app, go, openReceipt }: { app: RelayPay; go: (v: 
   const approved = intents.filter((i) => i.status === "APPROVED");
   const paidOrders = orders.filter((o) => o.status === "COMPLETED");
   const verifiedOrders = paidOrders.filter((o) => app.isVerified(o));
-  const openDisputes = disputes.filter((d) => !d.submitted && !d.resolution);
+  const openDisputes = disputes.filter(needsDecision);
   const latestIntent = intents[intents.length - 1];
   const latestPaid = paidOrders[paidOrders.length - 1];
   const latestSealed = [...intents].reverse().find((i) => i.receiptHash);

@@ -196,6 +196,12 @@ export function isSample(dispute: AnyRecord) {
   return dispute?.simulator === true || dispute?.paypalDisputeId === "simulated";
 }
 
+/** Still waiting on the merchant: not sent, not resolved, and not a sample that was already approved. */
+export function needsDecision(dispute: AnyRecord) {
+  if (dispute?.submitted || dispute?.resolution) return false;
+  return !(isSample(dispute) && dispute?.merchantApproved);
+}
+
 export function disputeStage(d: AnyRecord): { label: string; tone: Tone } {
   if (d.resolution === "ACCEPTED") return { label: "Refunded", tone: "neutral" };
   if (d.submitted) return { label: "Evidence sent to PayPal", tone: "ok" };
@@ -236,7 +242,7 @@ const EVENT_LABEL: Record<string, string> = {
   DISPUTE_SYNCED_DRAFTED: "Found a PayPal dispute · agent drafted a response",
   DISPUTE_ADVANCED: "Dispute moved forward in the PayPal sandbox",
   SANDBOX_DISPUTE_OPENED: "Sandbox dispute opened on PayPal",
-  STOCK_CONSUMED: "A cafe day used up stock",
+  STOCK_CONSUMED: "A café day used up stock",
   STOCK_RECEIVED: "Stock received from a paid order",
   RECONCILED: "Payments reconciled with PayPal Transaction Search",
   OWNER_NOTIFIED: "Notification sent (Zapier)",

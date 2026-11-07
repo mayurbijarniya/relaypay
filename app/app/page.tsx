@@ -24,7 +24,7 @@ import { DisputesView } from "@/components/views/Disputes";
 import { LedgerView } from "@/components/views/Ledger";
 import { SettingsView } from "@/components/views/Settings";
 import { VIEWS, type View } from "@/components/views/types";
-import type { AnyRecord } from "@/lib/format";
+import { needsDecision, type AnyRecord } from "@/lib/format";
 
 const PAGE: Record<View, { title: string; subtitle: string }> = {
   overview: {
@@ -108,7 +108,7 @@ export default function Console() {
       view: "disputes",
       label: "Disputes",
       icon: <IconScale />,
-      badge: data?.disputes.filter((d) => !d.submitted && !d.resolution).length,
+      badge: data?.disputes.filter(needsDecision).length,
     },
     { view: "ledger", label: "Ledger", icon: <IconList /> },
     { view: "settings", label: "Settings", icon: <IconSettings /> },

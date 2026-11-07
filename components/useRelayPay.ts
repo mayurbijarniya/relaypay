@@ -205,7 +205,7 @@ export function useRelayPay() {
         const result = await post("/api/inventory/consume");
         toast(
           result.low?.length ? "warn" : "ok",
-          "A cafe day went by",
+          "A café day went by",
           result.low?.length ? `Running low: ${result.low.join(", ")}. Ask the agent to reorder.` : "Stock is still above every reorder point."
         );
         await refresh();

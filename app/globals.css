@@ -1004,10 +1004,9 @@ select.input { padding-right: 30px; appearance: none; background-image: linear-g
 .k-doc__where { margin-top: 3px; font-size: 12.5px; color: var(--muted); }
 
 /* the console's hero: the live order window on the landscape (Overview) */
-.k-hero { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 18px; align-items: stretch; }
-.k-hero > .k-lit { padding: 32px; display: flex; flex-direction: column; justify-content: center; }
-.k-hero .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: stretch; }
-.k-hero .stat { justify-content: space-between; }
+/* the painted panel is as tall as its window; the walkthrough and activity column runs beside it */
+.k-hero { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.k-hero > .k-lit { padding: 32px; }
 .k-orderwin__body { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: 360px; }
 .k-orderwin__convo { display: grid; align-content: start; min-width: 0; }
 .k-orderwin__empty { display: grid; gap: 12px; justify-items: start; padding: 22px 20px; color: var(--muted); font-size: 14px; }
