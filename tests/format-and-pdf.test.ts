@@ -13,6 +13,10 @@ test("PDF text is reduced to characters the standard PDF font can draw", () => {
   assert.ok(out.includes("\nnext line"));
 });
 
+test("accented letters and middle dots stay readable in the PDF", () => {
+  assert.equal(sanitizePdfText("Café owner: Café approved · receipt sealed"), "Cafe owner: Cafe approved - receipt sealed");
+});
+
 test("dispute reasons read as plain language", () => {
   assert.equal(reasonLabel("UNAUTHORISED"), "Buyer says they didn't authorize this payment");
   assert.equal(reasonLabel("MERCHANDISE_OR_SERVICE_NOT_RECEIVED"), "Buyer says the order never arrived");

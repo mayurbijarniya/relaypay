@@ -538,6 +538,7 @@ Rules:
 - Recommend ACCEPT when the hash is missing or does not match.
 - "classification" describes the evidence, e.g. "Unauthorized claim — owner approval provenance".
 - Use only facts returned by tools. Never invent IDs, dates or delivery details.
+- Describe the receipt accurately: it existed before payment, it is unchanged, and PayPal holds the same fingerprint. Never say it proves the payment was authorized or who approved it.
 - One-sentence decision reason.`;
 
 const disputeTools = [

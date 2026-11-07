@@ -19,7 +19,10 @@ export function sanitizePdfText(input: string): string {
     .replace(/[“”„″]/g, '"')
     .replace(/…/g, "...")
     .replace(/[   ]/g, " ")
-    .replace(/•/g, "-")
+    .replace(/[•·]/g, "-")
     .replace(/\t/g, "  ")
+    // Accented letters keep their base letter (café -> cafe) instead of becoming "?".
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^\x20-\x7e\n]/g, "?");
 }
