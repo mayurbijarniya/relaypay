@@ -4,7 +4,7 @@ import { canonicalReceipt, hashReceipt, verifyReceipt } from "@/lib/receipts";
 import { IconX, IconShield, IconLock } from "@/components/icons";
 import { PublicShell } from "@/components/PublicShell";
 import { BrandIcon, Checks, DocMark, Lit, ReceiptDoc } from "@/components/kit";
-import { dateTime, money, shortId } from "@/lib/format";
+import { dateTime, money, policyLabel, shortId } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
@@ -93,7 +93,7 @@ export default async function VerifyPage({ params }: { params: Promise<{ hash: s
               }
             >
               <p>
-                Approved by <DocMark plain>{payload.approvedBy}</DocMark> before payment. Agent {payload.agentId}, policy {payload.policyVersion}.
+                Approved by <DocMark plain>{payload.approvedBy}</DocMark> before payment. Agent {payload.agentId}, policy {policyLabel(payload.policyVersion)}.
               </p>
               <p>
                 Fingerprint <DocMark mono>{shortId(hash, 10, 7)}</DocMark> {order ? "sent to PayPal as the order's custom_id." : "goes to PayPal as custom_id when the order is charged."}

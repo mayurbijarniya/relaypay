@@ -192,6 +192,11 @@ export function isPayPalVerified(source?: string) {
   return !!source && source.startsWith("PAYPAL_") && source.endsWith("_CUSTOM_ID");
 }
 
+/** "policy-v3" reads as "v3" after the word "Policy". */
+export function policyLabel(version?: string) {
+  return version ? String(version).replace(/^policy-/i, "") : "—";
+}
+
 export function isSample(dispute: AnyRecord) {
   return dispute?.simulator === true || dispute?.paypalDisputeId === "simulated";
 }

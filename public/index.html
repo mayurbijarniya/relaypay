@@ -64,13 +64,13 @@
   .d-win__bar { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 14px; background: #1d1f23; font-size: 13px; color: #9aa0a6; }
   .d-win__bar b { color: #eceef0; font-weight: 500; } .d-win__bar .sp { flex: 1; }
   .d-win__dots { display: flex; gap: 6px; } .d-win__dots i { width: 10px; height: 10px; border-radius: 50%; background: #3a3e43; }
-  .d-win__body { display: grid; grid-template-columns: 250px 1fr; min-height: 420px; }
+  .d-win__body { display: grid; grid-template-columns: 290px 1fr; min-height: 420px; }
   .inbox { border-right: 1px solid rgb(255 255 255 / .07); padding: 10px; display: grid; align-content: start; gap: 2px; }
   .inbox .q { height: 34px; margin-bottom: 6px; border-radius: 6px; background: rgb(255 255 255 / .06); display: flex; align-items: center; padding: 0 10px; color: #8a9096; font-size: 13px; }
   .inbox .t { display: grid; grid-template-columns: 30px 1fr auto; gap: 1px 10px; padding: 9px 8px; border-radius: 6px; font-size: 13px; }
   .inbox .t.is-on { background: rgb(255 255 255 / .07); }
   .inbox .t i { grid-row: 1 / span 2; width: 30px; height: 30px; border-radius: 6px; display: grid; place-items: center; font: 500 12px/1 var(--font-mono); font-style: normal; color: #18191b; }
-  .inbox .t b { font-weight: 500; color: #eceef0; } .inbox .t time { color: #8a9096; font-size: 13px; font-variant-numeric: tabular-nums; }
+  .inbox .t b { font-weight: 500; color: #eceef0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .inbox .t time { color: #8a9096; font-size: 13px; font-variant-numeric: tabular-nums; }
   .inbox .t span { grid-column: 2 / -1; color: #969ca2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .convo { display: grid; min-width: 0; align-content: start; }
   .d-chat { display: grid; gap: 8px; align-content: start; padding: 14px 18px; font-size: 14px; }
@@ -108,6 +108,12 @@
     .app > .app__pane--list { display: none; }
     .app > .app__pane + .app__pane { border-top: 0; }
   }
+
+  /* the console mock's filter names stay on one line */
+  #product .ui-win__nav { white-space: nowrap; }
+  /* a passed verification check is ticked, never struck through (a strike reads as failed) */
+  #disputes .ui-check.is-done .ui-check__label { color: var(--u-ink); }
+  #disputes .ui-check__label::after { display: none; }
 
   /* the receipt's code panel keeps the page's dark panel colours on the lit ground */
   #receipt .frame--lit { --ratio: 80%; }
@@ -178,17 +184,17 @@
           <div class="d-win__body">
             <div class="inbox">
               <div class="q">Orders</div>
-              <div class="t is-on"><i style="background:#f3c98b">CB</i><b>Coffee beans 40lb</b><time>$84.00</time><span>Awaiting café approval</span></div>
+              <div class="t is-on"><i style="background:#f3c98b">CB</i><b>Coffee beans 40lb bag</b><time>$84.00</time><span>Awaiting café approval</span></div>
               <div class="t"><i style="background:#9fd3b5">OM</i><b>Oat milk case (12)</b><time>$48.00</time><span>Verified with PayPal</span></div>
               <div class="t"><i style="background:#c9d6e3">SU</i><b>Sugar 10lb bag</b><time>$24.00</time><span>Verified with PayPal</span></div>
-              <div class="t"><i style="background:#e9b4a4">CS</i><b>Coffee beans 5lb</b><time>$37.00</time><span>Disputed · contest drafted</span></div>
+              <div class="t"><i style="background:#e9b4a4">CS</i><b>Coffee beans 5lb bag</b><time>$37.00</time><span>Disputed · contest drafted</span></div>
               <div class="t"><i style="background:#d8d2a6">OM</i><b>Oat milk case (12)</b><time>$72.00</time><span>Rejected by the café</span></div>
             </div>
             <div class="convo">
               <div class="d-chat" data-ly-steps="900">
                 <div class="d-msg d-msg--me">Check stock and reorder whatever is running low</div>
-                <div class="d-tool" data-step>Checked stock, today's budget and the catalog price</div>
-                <div class="d-msg d-msg--bot" data-step>Coffee beans 40lb is down to 1, below its reorder point of 2. Two bags bring it back to 3 for $84.00.<small>4 tool calls</small></div>
+                <div class="d-tool" data-step>Checked stock, today's budget and market prices (Channel3)</div>
+                <div class="d-msg d-msg--bot" data-step>Coffee beans 40lb bag is down to 1, below its reorder point of 2. Two bags bring it back to 3 for $84.00.<small>5 tool calls</small></div>
                 <div class="acts" data-step><span>Café approves</span><span>Reject</span></div>
               </div>
             </div>
@@ -219,25 +225,22 @@
             <div class="ui-win__body">
               <nav class="ui-win__side" aria-hidden="true">
                 <span class="ui-win__nav is-on"><svg class="ui-icon" viewBox="0 0 16 16"><path d="M4 2.5h8v11l-2-1.2-2 1.2-2-1.2-2 1.2z"/></svg>All<em>11</em></span>
-                <span class="ui-win__nav"><svg class="ui-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5"/><path d="M8 5v3l2 1.5"/></svg>Awaiting<em>2</em></span>
+                <span class="ui-win__nav"><svg class="ui-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5"/><path d="M8 5v3l2 1.5"/></svg>To charge<em>2</em></span>
                 <span class="ui-win__nav"><svg class="ui-icon" viewBox="0 0 16 16"><path d="m3.5 8.4 2.8 2.8 6.2-6.4"/></svg>Verified<em>7</em></span>
                 <span class="ui-win__nav"><svg class="ui-icon" viewBox="0 0 16 16"><path d="M8 2.5 13.5 5v3.5c0 2.6-2.2 4.4-5.5 5.5-3.3-1.1-5.5-2.9-5.5-5.5V5z"/></svg>Disputed<em>1</em></span>
-                <span class="ui-win__label">Stock</span>
-                <span class="ui-win__nav"><span class="ui-win__hash">#</span>Coffee</span>
-                <span class="ui-win__nav"><span class="ui-win__hash">#</span>Dairy</span>
               </nav>
               <div class="ui-win__main">
                 <div class="ui-win__cols" aria-hidden="true"><span>Item</span><span>Order</span><span>Status</span><span>Age</span></div>
                 <ul class="ui-win__rows">
-                  <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="1">CB</span><span class="ui-win__who">Coffee beans 40lb</span><span class="ui-win__sub">2 × $42.00 · $84.00</span><span class="ui-win__st" data-st>Approved</span><span class="ui-win__age">2m</span></li>
+                  <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="1">CB</span><span class="ui-win__who">Coffee beans 40lb bag</span><span class="ui-win__sub">2 × $42.00 · $84.00</span><span class="ui-win__st" data-st>Approved</span><span class="ui-win__age">2m</span></li>
                   <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="3">OM</span><span class="ui-win__who">Oat milk case (12)</span><span class="ui-win__sub">2 × $24.00 · $48.00</span><span class="ui-win__st" data-st>Approved</span><span class="ui-win__age">9m</span></li>
                   <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="4">SU</span><span class="ui-win__who">Sugar 10lb bag</span><span class="ui-win__sub">2 × $12.00 · $24.00</span><span class="ui-win__st is-done" data-st>Verified</span><span class="ui-win__age">1h</span></li>
-                  <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="2">CS</span><span class="ui-win__who">Coffee beans 5lb</span><span class="ui-win__sub">2 × $18.50 · $37.00</span><span class="ui-win__st is-you" data-st>Disputed</span><span class="ui-win__age">2h</span></li>
+                  <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="2">CS</span><span class="ui-win__who">Coffee beans 5lb bag</span><span class="ui-win__sub">2 × $18.50 · $37.00</span><span class="ui-win__st is-you" data-st>Disputed</span><span class="ui-win__age">2h</span></li>
                   <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="5">OM</span><span class="ui-win__who">Oat milk case (12)</span><span class="ui-win__sub">5 × $24.00 · $120.00</span><span class="ui-win__st is-done" data-st>Verified</span><span class="ui-win__age">3h</span></li>
-                  <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="1">CB</span><span class="ui-win__who">Coffee beans 40lb</span><span class="ui-win__sub">3 × $42.00 · $126.00</span><span class="ui-win__st is-done" data-st>Verified</span><span class="ui-win__age">1d</span></li>
+                  <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="1">CB</span><span class="ui-win__who">Coffee beans 40lb bag</span><span class="ui-win__sub">3 × $42.00 · $126.00</span><span class="ui-win__st is-done" data-st>Verified</span><span class="ui-win__age">1d</span></li>
                   <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="4">SU</span><span class="ui-win__who">Sugar 10lb bag</span><span class="ui-win__sub">3 × $12.00 · $36.00</span><span class="ui-win__st is-done" data-st>Verified</span><span class="ui-win__age">1d</span></li>
                   <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="3">OM</span><span class="ui-win__who">Oat milk case (12)</span><span class="ui-win__sub">4 × $24.00 · $96.00</span><span class="ui-win__st is-done" data-st>Verified</span><span class="ui-win__age">2d</span></li>
-                  <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="2">CS</span><span class="ui-win__who">Coffee beans 5lb</span><span class="ui-win__sub">1 × $18.50 · $18.50</span><span class="ui-win__st is-done" data-st>Verified</span><span class="ui-win__age">3d</span></li>
+                  <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="2">CS</span><span class="ui-win__who">Coffee beans 5lb bag</span><span class="ui-win__sub">1 × $18.50 · $18.50</span><span class="ui-win__st is-done" data-st>Verified</span><span class="ui-win__age">3d</span></li>
                 </ul>
               </div>
             </div>
@@ -248,7 +251,7 @@
             <article class="ui-doc__page">
               <div class="ui-doc__label">Approval receipt · sealed 5 Nov, 17:19</div>
               <div class="ui-doc__title">Coffee beans 40lb bag · 2 × $42.00</div>
-              <div class="ui-doc__text">Approved by cafe-owner before payment, after the agent's proposal and 4 tool calls. Policy v3 checks passed.</div>
+              <div class="ui-doc__text">Approved by cafe-owner before payment, after the agent's proposal and 5 tool calls. Policy v3 checks passed.</div>
               <div class="ui-doc__text">Fingerprint <mark class="ui-doc__mark is-on">49701d33ecbe…630dd1c</mark> sent to PayPal as the order's custom_id.</div>
               <div class="ui-doc__text">PayPal captured <mark class="ui-doc__mark" data-kind="Match" data-msg="PayPal charged the amount the café approved." data-where="PayPal capture, re-read just now">$84.00</mark> with the café's saved Vault payment method, no redirect.</div>
               <div class="ui-doc__text">Any edit to this receipt changes its fingerprint, so it no longer matches PayPal's copy.</div>
@@ -348,7 +351,7 @@
                     </div>
                   </div>
                   <div class="ui-chat__input">
-                    <span class="ui-chat__ph">Write a note for PayPal</span>
+                    <span class="ui-chat__ph">Approve, refund or send evidence</span>
                     <span class="ui-chat__send" aria-hidden="true"><svg viewBox="0 0 16 16" width="14" height="14"><path d="M8 13V3.5M3.8 7.5 8 3.3l4.2 4.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
                   </div>
                 </div>
@@ -386,7 +389,7 @@
                 <div class="ui-files__status"><span class="ui-dot"></span><span data-files-status>4 parts added</span></div>
                 <ul class="ui-files__grid">
                   <li class="ui-file is-done"><span class="ui-file__icon"><img data-icon="file:pdf2" src="assets/icons/pdf2.svg" width="32" height="32" loading="lazy" alt=""></span><span class="ui-file__name">Evidence packet.pdf</span><span class="ui-file__kind">PDF</span><span class="ui-file__bar"><i></i></span><span class="ui-file__check"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
-                  <li class="ui-file is-done"><span class="ui-file__icon"><img data-icon="file:json" src="assets/icons/json.svg" width="32" height="32" loading="lazy" alt=""></span><span class="ui-file__name">Receipt.json</span><span class="ui-file__kind">JSON</span><span class="ui-file__bar"><i></i></span><span class="ui-file__check"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                  <li class="ui-file is-done"><span class="ui-file__icon"><img data-icon="file:json" src="assets/icons/json.svg" width="32" height="32" loading="lazy" alt=""></span><span class="ui-file__name">Approval receipt</span><span class="ui-file__kind">Receipt</span><span class="ui-file__bar"><i></i></span><span class="ui-file__check"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
                   <li class="ui-file is-done"><span class="ui-file__icon"><img data-icon="paypal" src="assets/icons/paypal.svg" width="32" height="32" loading="lazy" alt=""></span><span class="ui-file__name">Capture record</span><span class="ui-file__kind">PayPal</span><span class="ui-file__bar"><i></i></span><span class="ui-file__check"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
                   <li class="ui-file is-done"><span class="ui-file__icon"><img data-icon="file:log" src="assets/icons/log.svg" width="32" height="32" loading="lazy" alt=""></span><span class="ui-file__name">Timeline</span><span class="ui-file__kind">Log</span><span class="ui-file__bar"><i></i></span><span class="ui-file__check"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
                 </ul>
@@ -410,15 +413,16 @@
       <div class="frame frame--lit dg-frame">
         <div class="dg" data-diagram><script type="application/json">{
             "layout": "hub",
-            "alt": "RelayPay connects to PayPal Orders, Vault, Disputes and Webhooks, Zapier, Neon and Render.",
+            "alt": "RelayPay connects to PayPal Orders, Vault, Disputes and Webhooks, Channel3, Zapier, AG Grid and Render.",
             "center": { "label": "RelayPay", "tone": "plain" },
             "spokes": [
               { "label": "PayPal Orders", "icon": "paypal" },
               { "label": "PayPal Vault", "icon": "paypal" },
               { "label": "PayPal Disputes", "icon": "paypal" },
               { "label": "Webhooks", "icon": "paypal" },
+              { "label": "Channel3", "icon": "text:C3" },
               { "label": "Zapier", "icon": "zapier" },
-              { "label": "Neon", "icon": "neon" },
+              { "label": "AG Grid", "icon": "text:AG" },
               { "label": "Render", "icon": "si:render" }
             ]
           }</script></div>

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button, CopyValue, Disclosure, Drawer, Pill, RawJson, AgentTrace } from "@/components/ui";
 import { Checks, Code, DocMark, Lit, ReceiptDoc } from "@/components/kit";
 import { IconExternal, IconLock, IconShield } from "@/components/icons";
-import { agentModeLabel, dateTime, money, shortId, type AnyRecord } from "@/lib/format";
+import { agentModeLabel, dateTime, money, policyLabel, shortId, type AnyRecord } from "@/lib/format";
 import type { RelayPay } from "@/components/useRelayPay";
 
 const DISPUTE_REASONS = [
@@ -149,7 +149,7 @@ export function ReceiptDrawer({
             <>
               <p>
                 Approved by <DocMark plain>{receipt.approvedBy}</DocMark> before payment, after the agent&apos;s proposal and {intent.toolCalls?.length || 0} tool calls.
-                Policy {checks.policyVersion || "—"} checks passed{receipt.highValueConfirmed ? ", high value confirmed by the café" : ""}.
+                Policy {policyLabel(checks.policyVersion)} checks passed{receipt.highValueConfirmed ? ", high value confirmed by the café" : ""}.
               </p>
               <p>
                 Fingerprint <DocMark mono>{shortId(intent.receiptHash, 10, 7)}</DocMark> {order ? "sent to PayPal as the order's custom_id." : "goes to PayPal as custom_id when the order is charged."}
