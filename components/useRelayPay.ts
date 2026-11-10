@@ -38,6 +38,7 @@ export type AppData = {
     sandboxBuyerConfigured: boolean;
     channel3: boolean;
     zapier: boolean;
+    reconcileEnabled: boolean;
   };
   policy: { version: string; dailyCap: string; highValueThreshold: string; maxQuantity: number; spentToday: string; remainingToday: string };
 };

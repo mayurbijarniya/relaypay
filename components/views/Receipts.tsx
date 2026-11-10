@@ -139,6 +139,8 @@ export function ReceiptsView({ app, openReceipt }: { app: RelayPay; openReceipt:
         field: "paypalConfirmedAt",
         headerName: "PayPal ledger",
         headerTooltip: "Found in PayPal Transaction Search (reconciliation)",
+        // Needs "Transaction search" enabled on the PayPal app, so it is opt-in (ENABLE_RECONCILE).
+        hide: !data.config.reconcileEnabled,
         width: 140,
         valueFormatter: (p) => (p.value ? "Confirmed" : ""),
         cellRenderer: (p: any) =>
@@ -196,7 +198,7 @@ export function ReceiptsView({ app, openReceipt }: { app: RelayPay; openReceipt:
         },
       },
     ],
-    [app, data.orders, vaultReady]
+    [app, data.orders, data.config.reconcileEnabled, vaultReady]
   );
 
   const charged = rows.filter((r) => r.payment === "CAPTURED");
@@ -242,9 +244,11 @@ export function ReceiptsView({ app, openReceipt }: { app: RelayPay; openReceipt:
         tools={
           <>
             <WindowSearch label="Search receipts" placeholder="Search item, fingerprint or PayPal ID" value={search} onChange={setSearch} />
-            <Button size="sm" variant="secondary" icon={<IconRefresh size={14} />} loading={app.busy.reconcile} disabled={!charged.length} onClick={() => void app.actions.reconcile()}>
-              Reconcile with PayPal
-            </Button>
+            {data.config.reconcileEnabled && (
+              <Button size="sm" variant="secondary" icon={<IconRefresh size={14} />} loading={app.busy.reconcile} disabled={!charged.length} onClick={() => void app.actions.reconcile()}>
+                Reconcile with PayPal
+              </Button>
+            )}
             <Button
               size="sm"
               variant="secondary"

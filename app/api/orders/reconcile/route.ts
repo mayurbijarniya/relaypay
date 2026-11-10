@@ -14,6 +14,11 @@ import { route } from "@/lib/http";
  * fresh capture showing as "not yet indexed" is normal.
  */
 export const POST = route(async (req: Request) => {
+  // Opt-in: it needs "Transaction search" enabled on the PayPal app, and a public
+  // demo should not let visitors call PayPal's reporting API through it.
+  if (process.env.ENABLE_RECONCILE !== "true") {
+    throw new HttpError(404, "Reconciliation is turned off. Set ENABLE_RECONCILE=true after enabling Transaction search on the PayPal app.");
+  }
   const ip = clientIp(req);
   await mutate((db) => {
     const limit = checkRateLimit(db, "paypal", ip);
