@@ -12,7 +12,7 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test \"tests/*.test.ts\"",
+    "test": "node --conditions=react-server --import tsx --test tests/*.test.ts",
     "check": "npm run typecheck && npm test",
     "seed": "node scripts/seed.mjs",
     "reset": "node scripts/reset.mjs"
@@ -30,6 +30,8 @@
     "@types/node": "^22.0.0",
     "@types/pg": "^8.23.1",
     "@types/react": "^19.0.0",
+    "server-only": "^0.0.1",
+    "tsx": "^4.23.15",
     "typescript": "^5.7.0"
   }
 }
