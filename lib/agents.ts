@@ -739,7 +739,7 @@ export async function draftDisputeResponse(dispute: DisputeAgentInput): Promise<
       classification: fallback.classification,
       evidenceType: fallback.evidenceType,
       reason: evidenceStrong
-        ? `The receipt hash matches the ${HASH_SOURCE_LABEL[ctx.hashSource] || "PayPal record"}, so the owner's approval can be proven.`
+        ? `The receipt hash matches the ${HASH_SOURCE_LABEL[ctx.hashSource] || "PayPal record"}, so the approval record existed when the payment was made and has not been changed.`
         : "No receipt hash in PayPal's records matches an approved receipt, so contesting would likely fail.",
     };
   }
