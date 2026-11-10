@@ -1,7 +1,7 @@
 import "server-only";
 
 /**
- * Zapier (hackathon sponsor) — owner notifications.
+ * Zapier (optional integration) — owner notifications.
  *
  * RelayPay keeps a human in the loop, so the owner has to know when something
  * needs them. When ZAPIER_WEBHOOK_URL is set (a Zapier "Catch Hook" URL),

@@ -17,6 +17,30 @@ export class PayPalApiError extends Error {
 
 let cachedToken: { token: string; expiresAt: number } | null = null;
 
+const DEFAULT_TIMEOUT_MS = 20_000;
+
+/** PAYPAL_TIMEOUT_MS overrides every PayPal timeout (the tests use a tiny one). */
+function timeoutMs(fallback = DEFAULT_TIMEOUT_MS) {
+  const n = Number(process.env.PAYPAL_TIMEOUT_MS);
+  return Number.isFinite(n) && n > 0 ? n : fallback;
+}
+
+/**
+ * fetch with a hard timeout, so a hung PayPal call fails fast with a readable
+ * error instead of hanging the request. Pass a longer limit for file uploads.
+ */
+export async function paypalRequest(url: string, init: RequestInit = {}, opts: { timeoutMs?: number } = {}): Promise<Response> {
+  const ms = timeoutMs(opts.timeoutMs);
+  try {
+    return await fetch(url, { ...init, signal: AbortSignal.timeout(ms) });
+  } catch (e: any) {
+    if (e?.name === "TimeoutError" || e?.name === "AbortError") {
+      throw new PayPalApiError(504, `PayPal ${new URL(url).pathname} timed out after ${ms >= 1000 ? `${Math.round(ms / 1000)}s` : `${ms}ms`}`);
+    }
+    throw e;
+  }
+}
+
 export async function getAccessToken(): Promise<string> {
   requirePayPalEnv();
   if (cachedToken && Date.now() < cachedToken.expiresAt - 60_000) {
@@ -27,7 +51,7 @@ export async function getAccessToken(): Promise<string> {
     `${env.paypalClientId}:${env.paypalClientSecret}`
   ).toString("base64");
 
-  const res = await fetch(`${paypalBaseUrl}/v1/oauth2/token`, {
+  const res = await paypalRequest(`${paypalBaseUrl}/v1/oauth2/token`, {
     method: "POST",
     headers: {
       Authorization: `Basic ${credentials}`,
@@ -54,7 +78,7 @@ export async function paypalFetch<T>(
 ): Promise<T> {
   const token = await getAccessToken();
   const reqId = (options.headers as any)?.["PayPal-Request-Id"] || crypto.randomUUID();
-  const res = await fetch(`${paypalBaseUrl}${path}`, {
+  const res = await paypalRequest(`${paypalBaseUrl}${path}`, {
     ...options,
     headers: {
       Authorization: `Bearer ${token}`,

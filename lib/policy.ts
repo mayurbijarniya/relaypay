@@ -9,7 +9,18 @@
 
 export const POLICY_VERSION = "policy-v3";
 export const CATALOG_CURRENCY = "USD";
-export const DAILY_CAP_USD = 500;
+
+function positiveIntFromEnv(name: string, fallback: number): number {
+  const n = Math.floor(Number(process.env[name]));
+  return Number.isFinite(n) && n > 0 ? n : fallback;
+}
+
+/**
+ * Today's spend limit across the whole café. 500 by default; a hosted demo that
+ * many judges share can raise it with DAILY_CAP_USD. The cap in force when a
+ * receipt is approved is sealed into that receipt's policy checks.
+ */
+export const DAILY_CAP_USD = positiveIntFromEnv("DAILY_CAP_USD", 500);
 export const HIGH_VALUE_USD = 100;
 export const MAX_SINGLE_PURCHASE_USD = 10_000;
 export const MAX_QUANTITY = 20;

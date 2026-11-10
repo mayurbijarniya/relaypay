@@ -22,6 +22,16 @@ export const LIMITS: Record<string, Limit> = {
   paypal: { windowMs: 5 * 60_000, perWindow: 20, perDay: 400 },
 };
 
+/**
+ * RATE_LIMIT_MULTIPLIER scales every limit (default 1), so a public demo that
+ * many judges share can be given more headroom without editing code.
+ */
+function scaled(limit: Limit): Limit {
+  const n = Number(process.env.RATE_LIMIT_MULTIPLIER);
+  const k = Number.isFinite(n) && n > 0 ? n : 1;
+  return { windowMs: limit.windowMs, perWindow: Math.max(1, Math.round(limit.perWindow * k)), perDay: Math.max(1, Math.round(limit.perDay * k)) };
+}
+
 export function clientIp(req: Request) {
   const forwarded = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "local";
   return forwarded.split(",")[0].trim().slice(0, 64) || "local";
@@ -29,7 +39,7 @@ export function clientIp(req: Request) {
 
 export function checkRateLimit(db: DB, scope: keyof typeof LIMITS, ip: string): { ok: true } | { ok: false; reason: string } {
   if (process.env.DISABLE_RATE_LIMITS === "true") return { ok: true };
-  const limit = LIMITS[scope];
+  const limit = scaled(LIMITS[scope]);
   const now = Date.now();
   const today = new Date().toISOString().slice(0, 10);
 

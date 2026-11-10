@@ -47,6 +47,7 @@ export const GET = route(async () => {
       sandboxBuyerConfigured: !!env.sandboxBuyerEmail,
       channel3: channel3Enabled(),
       zapier: zapierEnabled(),
+      reconcileEnabled: process.env.ENABLE_RECONCILE === "true",
     },
     policy: {
       version: POLICY_VERSION,

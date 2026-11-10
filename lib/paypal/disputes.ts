@@ -1,5 +1,5 @@
 import "server-only";
-import { paypalFetch, getAccessToken, paypalBaseUrl } from "./client";
+import { paypalFetch, paypalRequest, getAccessToken, paypalBaseUrl } from "./client";
 import { getCapture, getOrder } from "./orders";
 
 export type PayPalCustomId = {
@@ -158,14 +158,14 @@ export async function createSandboxDispute(input: {
       { type: "application/json" }
     )
   );
-  const res = await fetch(`${paypalBaseUrl}/v1/customer/disputes`, {
+  const res = await paypalRequest(`${paypalBaseUrl}/v1/customer/disputes`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
       "PayPal-Auth-Assertion": buyerAssertion(input.clientId, input.buyerEmail),
     },
     body: form,
-  });
+  }, { timeoutMs: 45_000 });
   const text = await res.text();
   let json: any = {};
   try {
@@ -187,11 +187,11 @@ export async function provideEvidence(
   if (file) {
     form.append("file1", new Blob([new Uint8Array(file.buffer)], { type: file.mime }), file.name);
   }
-  const res = await fetch(`${paypalBaseUrl}/v1/customer/disputes/${disputeId}/provide-evidence`, {
+  const res = await paypalRequest(`${paypalBaseUrl}/v1/customer/disputes/${disputeId}/provide-evidence`, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
     body: form,
-  });
+  }, { timeoutMs: 45_000 });
   if (!res.ok) throw new Error(`provide-evidence failed: ${res.status} ${await res.text()}`);
   const text = await res.text();
   if (!text) return {};

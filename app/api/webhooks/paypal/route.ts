@@ -1,6 +1,6 @@
 import { NextResponse, after } from "next/server";
 import { addLedger, mutate, uid } from "@/lib/store";
-import { getAccessToken, paypalBaseUrl } from "@/lib/paypal/client";
+import { getAccessToken, paypalBaseUrl, paypalRequest } from "@/lib/paypal/client";
 import { getDispute } from "@/lib/paypal/disputes";
 import { draftAndSave, SAMPLE_ID } from "@/lib/disputeService";
 import { centsFromUsd } from "@/lib/policy";
@@ -23,7 +23,7 @@ async function verifyWebhook(req: Request, event: any, webhookId: string): Promi
   if (!webhookId) return { ok: false, source: "REAL", reason: "PAYPAL_WEBHOOK_ID is not configured" };
   try {
     const token = await getAccessToken();
-    const res = await fetch(`${paypalBaseUrl}/v1/notifications/verify-webhook-signature`, {
+    const res = await paypalRequest(`${paypalBaseUrl}/v1/notifications/verify-webhook-signature`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
       body: JSON.stringify({

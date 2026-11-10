@@ -176,7 +176,7 @@ export function SettingsView({ app }: { app: RelayPay }) {
             ok={config.zapier}
             warn={!config.zapier}
             mark={<BrandTile name="zapier" />}
-            title="Zapier owner alerts (sponsor)"
+            title="Zapier owner alerts (optional)"
             detail={config.zapier ? "On · approvals, payments and disputes notify you" : "Off · set ZAPIER_WEBHOOK_URL to a Zapier Catch Hook"}
             action={
               config.zapier ? (
