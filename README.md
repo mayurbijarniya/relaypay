@@ -31,6 +31,14 @@ No PayPal login is needed. The café's PayPal is already saved with Vault on the
 
 The free hosting tier sleeps when idle, so the first visit can take about a minute to wake up.
 
+## Testing access
+
+- **No login and no credentials are needed.** The hosted demo uses PayPal's **sandbox** only, and no real money moves. The café's PayPal is already saved with Vault, so **Charge with PayPal** works without a PayPal login.
+- Every step in the list above works on the hosted demo. If the agent says nothing is running low, press **Run a café day** first.
+- The demo is **shared**: every visitor sees the same café, and the daily spend cap and request limits are shared too (raised on the hosted demo). If you see "Over today's cap" or "reached today's limit", it resets at 00:00 UTC.
+- **Disputes → Run sample** is the way to see the dispute agent. Filing a *real* sandbox dispute needs a PayPal sandbox buyer login: **[team: add a dedicated sandbox buyer email and password here, or delete this line]**.
+- The demo stays live until judging ends on December 15, 2026.
+
 ---
 
 ## Who is who
@@ -83,7 +91,7 @@ Public pages: `/` (landing), `/docs` (how it works, PayPal APIs, verify a receip
 |---|---|
 | **Overview** | Today's numbers, a live order window (the agent's latest proposal with its Approve / Charge / Verify buttons), the guided six-step walkthrough, recent activity |
 | **Purchases** | Café stock, the agent's proposals with its reasoning, café approval, charge with PayPal |
-| **Receipts** | Every sealed receipt from the moment the café approves, its PayPal payment state (not charged, captured), **Charge** or **Verify with PayPal**, reconcile, CSV |
+| **Receipts** | Every sealed receipt from the moment the café approves, its PayPal payment state (not charged, captured), **Charge** or **Verify with PayPal**, CSV (optional **Reconcile with PayPal** when `ENABLE_RECONCILE=true`) |
 | **Disputes** | Import or sync PayPal disputes, advance them in the sandbox, the agent's verdict, evidence checks, the response and a preview of the evidence PDF |
 | **Ledger** | Who did what and when (agent, café, supplier, PayPal), plus verified PayPal webhooks |
 | **Settings** | Read-only status: Vault (locked once connected), approval rules, catalog, connections |
@@ -119,20 +127,32 @@ The agents never hold PayPal credentials and never move money. Live PayPal is re
 `subconscious/glm-5.3-marathon` via `https://api.subconscious.dev/v1` (OpenAI-compatible; change with `LLM_BASE_URL` /
 `LLM_MODEL`). Two agents with visible tool traces; the purchase prompt's hash is sealed into each receipt.
 
-## Sponsors
+### AI tools and services used
 
-| Sponsor | Use | Turn on |
+The hackathon asks every entry to name each AI tool, model or service it used, and how. In the running product:
+
+| Tool or service | How it is used |
+|---|---|
+| `subconscious/glm-5.3-marathon` (via `LLM_BASE_URL`) | Both agents run a tool-calling loop on it. The model chooses which tool to call; the backend runs the tool and enforces every rule. It also writes the supplier's dispute response from facts the tools returned. |
+| Channel3 API | The purchasing agent's optional market price check. |
+| No other model | Receipt hashing, price math, policy checks and PayPal verification are deterministic code, not AI. |
+
+Development tools: **[team: name any AI coding assistants or other AI tools used to build RelayPay, and what each was used for. The rules require this.]**
+
+## Partners and integrations
+
+| Integration | Use | Turn on |
 |---|---|---|
 | **AG Grid** (Community 32) | Receipts, ledger and webhook tables: quick filter, CSV export, external actor filter, custom renderers, pinned actions, auto-height rows, pagination | always on |
 | **Render** | Blueprint with a web service | deploy |
 | **Channel3** | Market price check sealed into the receipt | `CHANNEL3_API_KEY` |
-| **Zapier** | Alerts when the café's approval is needed, an order is charged, a dispute arrives, evidence is sent | `ZAPIER_WEBHOOK_URL` |
+| **Zapier** (optional, not a hackathon sponsor) | Alerts when the café's approval is needed, an order is charged, a dispute arrives, evidence is sent | `ZAPIER_WEBHOOK_URL` |
 
 ---
 
 ## Run it locally (about 5 minutes)
 
-Requires Node 20+ (Node 22.18+ for `npm test`). No database or webhook needed locally.
+Requires Node 20+. No database or webhook needed locally.
 
 1. `git clone https://github.com/mayurbijarniya/relaypay.git && cd relaypay`
 2. `cp .env.example .env` and fill in `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET` (sandbox), `LLM_API_KEY` and
@@ -144,7 +164,7 @@ Requires Node 20+ (Node 22.18+ for `npm test`). No database or webhook needed lo
    - **Receipts → Verify**
    - **Disputes → Run sample** (a labelled sample; nothing is sent)
 
-Scripts: `npm run check` (types + tests), `npm run seed` (spare charged orders), `npm run reset` (wipe local data).
+Scripts: `npm run check` (types + tests), `npm test` (unit and route tests against a fake PayPal and LLM: no network, no credentials), `npm run seed` (spare charged orders), `npm run reset` (wipe local data).
 
 ### A real sandbox dispute (for the video)
 
@@ -162,6 +182,7 @@ Scripts: `npm run check` (types + tests), `npm run seed` (spare charged orders),
 3. Register `https://<your-app>/api/webhooks/paypal` in the PayPal dashboard for `PAYMENT.CAPTURE.COMPLETED` and
    `CUSTOMER.DISPUTE.*`; set its ID as `PAYPAL_WEBHOOK_ID`.
 4. Connect Vault once (Settings, as the café). It's then locked, and judges can charge orders without logging in.
+5. Point a free uptime monitor at `https://<your-app>/api/health` (see **Operating the live demo**).
 
 ## Environment variables
 
@@ -180,6 +201,10 @@ Scripts: `npm run check` (types + tests), `npm run seed` (spare charged orders),
 | `ALLOW_VAULT_RESET` | no | Allow reconnecting Vault after it's locked |
 | `ALLOW_SIMULATOR` | no | Accept unsigned simulator webhooks (keep `false` when public) |
 | `DISABLE_RATE_LIMITS` | no | Local development only |
+| `DAILY_CAP_USD` | no | The café's daily spend limit in USD (default 500). Raised on the hosted demo. |
+| `RATE_LIMIT_MULTIPLIER` | no | Scales every rate limit (default 1) |
+| `PAYPAL_TIMEOUT_MS` | no | Timeout for each PayPal request (default 20000; evidence uploads 45000) |
+| `ENABLE_RECONCILE` | no | Show **Reconcile with PayPal**. Needs "Transaction search" enabled on the PayPal app. |
 | `ALLOW_LIVE` | no | Safety switch for live PayPal |
 
 ## Code map
@@ -203,6 +228,29 @@ lib/paypal/                        client, orders, vault, disputes, reporting
 tests/, scripts/                   node:test suites; seed and reset
 docs/                              README screenshots
 ```
+
+## Operating the live demo
+
+For the team, while judges are using it (through December 15):
+
+- **Keep it awake.** Point a free uptime monitor at `https://<your-app>/api/health` every 5 minutes. It is cheap and touches nothing. `/api/health?deep=1` also confirms the database answers.
+- **Give judges headroom.** `render.yaml` raises `DAILY_CAP_USD` and `RATE_LIMIT_MULTIPLIER` for the hosted demo. The cap in force when a receipt is approved is sealed into that receipt. Raise them further if anyone reports "Over today's cap".
+- **Reset to a clean demo** (keeps the saved PayPal, restores starting stock). Run in the database console:
+
+  ```sql
+  UPDATE relaypay_store
+  SET value = jsonb_build_object(
+    'intents', '[]'::jsonb, 'orders', '[]'::jsonb, 'events', '[]'::jsonb,
+    'disputes', '[]'::jsonb, 'ledger', '[]'::jsonb, 'rateLimits', '[]'::jsonb,
+    'vault', value->'vault',
+    'inventory', '{"Coffee beans 40lb bag":1,"Coffee beans 5lb bag":5,"Oat milk case (12)":6,"Sugar 10lb bag":4}'::jsonb
+  ), updated_at = now()
+  WHERE key = 'db';
+  ```
+
+- **If charging breaks because the saved PayPal stopped working:** set `ALLOW_VAULT_RESET=true`, redeploy, reconnect Vault in Settings as the café, then set it back to `false`.
+- **Spare payments for the dispute video:** `BASE_URL=https://<your-app> npm run seed` creates charged orders. Evidence can be submitted only once per dispute.
+- **Before December 1:** run the whole loop on the live URL, check `/api/health?deep=1`, confirm the LLM and Channel3 keys still have credit, and check the webhook shows as delivered in the PayPal dashboard.
 
 ## Limitations
 

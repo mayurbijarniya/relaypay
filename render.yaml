@@ -8,6 +8,8 @@ services:
     plan: free
     buildCommand: npm install && npm run build
     startCommand: npm run start
+    # Cheap liveness check. Point a free uptime monitor at the same path to keep the free tier awake.
+    healthCheckPath: /api/health
     envVars:
       - key: PAYPAL_ENVIRONMENT
         value: sandbox
@@ -38,4 +40,12 @@ services:
       - key: ALLOW_LIVE
         value: "false"
       - key: ALLOW_VAULT_RESET
+        value: "false"
+      # A hosted demo shared by many judges needs more headroom than the local defaults.
+      - key: DAILY_CAP_USD
+        value: "2000"
+      - key: RATE_LIMIT_MULTIPLIER
+        value: "5"
+      # Needs "Transaction search" enabled on the PayPal app. Leave off until it is.
+      - key: ENABLE_RECONCILE
         value: "false"
