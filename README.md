@@ -199,6 +199,7 @@ Scripts: `npm run check` (types + tests), `npm test` (unit and route tests again
 | `CHANNEL3_API_KEY` | no | Market price check |
 | `ZAPIER_WEBHOOK_URL` | no | Alerts (`https://hooks.zapier.com/…`) |
 | `ALLOW_VAULT_RESET` | no | Allow reconnecting Vault after it's locked |
+| `ADMIN_RESET_TOKEN` | no | 12+ characters. Turns on the team-only **Reset the demo** control in Settings; leave unset to keep it off |
 | `ALLOW_SIMULATOR` | no | Accept unsigned simulator webhooks (keep `false` when public) |
 | `DISABLE_RATE_LIMITS` | no | Local development only |
 | `DAILY_CAP_USD` | no | The café's daily spend limit in USD (default 500). Raised on the hosted demo. |
@@ -235,7 +236,8 @@ For the team, while judges are using it (through December 15):
 
 - **Keep it awake.** Point a free uptime monitor at `https://<your-app>/api/health` every 5 minutes. It is cheap and touches nothing. `/api/health?deep=1` also confirms the database answers.
 - **Give judges headroom.** `render.yaml` raises `DAILY_CAP_USD` and `RATE_LIMIT_MULTIPLIER` for the hosted demo. The cap in force when a receipt is approved is sealed into that receipt. Raise them further if anyone reports "Over today's cap".
-- **Reset to a clean demo** (keeps the saved PayPal, restores starting stock). Run in the database console:
+- **Reset to a clean demo, from the app.** Set `ADMIN_RESET_TOKEN` on the server (12 or more random characters, kept secret by the team). Settings then shows **Reset the demo (team only)**: enter the code and everything but the saved PayPal is cleared and starting stock is restored. Without the variable the button and the route are off.
+- **Reset to a clean demo from the database** (same result, works even if the app is down). Run in the database console:
 
   ```sql
   UPDATE relaypay_store

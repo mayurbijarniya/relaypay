@@ -48,6 +48,7 @@ export const GET = route(async () => {
       channel3: channel3Enabled(),
       zapier: zapierEnabled(),
       reconcileEnabled: process.env.ENABLE_RECONCILE === "true",
+      resetEnabled: (process.env.ADMIN_RESET_TOKEN || "").length >= 12,
     },
     policy: {
       version: POLICY_VERSION,

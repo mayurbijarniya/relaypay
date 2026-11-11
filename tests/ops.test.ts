@@ -17,6 +17,7 @@ async function loadAll() {
     client: await import("@/lib/paypal/client"),
     health: (await import("@/app/api/health/route")).GET,
     webhook: (await import("@/app/api/webhooks/paypal/route")).POST,
+    reset: (await import("@/app/api/admin/reset/route")).POST,
   };
 }
 const m = () => (loaded ??= loadAll());
@@ -152,4 +153,52 @@ test("a webhook whose verification call hangs is rejected, not left waiting", { 
   const res = await call(webhook, { raw: JSON.stringify({ id: "evt-1", event_type: "PAYMENT.CAPTURE.COMPLETED", resource: {} }), headers: { "paypal-transmission-id": "t" } });
   assert.equal(res.status, 400);
   assert.match(res.json.reason, /timed out/);
+});
+
+// --- demo reset ------------------------------------------------------------
+
+async function seedState() {
+  const { store } = await m();
+  await store.mutate((db) => {
+    db.intents.push({ id: "i1", product: "Oat milk case (12)", quantity: 1, amount: "24.00", currency: "USD", rationale: "", alternatives: [], status: "CAPTURED", createdAt: new Date().toISOString() } as any);
+    db.orders.push({ id: "o1", intentId: "i1", paypalOrderId: "ORD-1", status: "COMPLETED", customId: "x", amount: "24.00", currency: "USD", createdAt: new Date().toISOString() });
+    db.vault = { vaultId: "VAULT-1", status: "ACTIVE" };
+    db.inventory["Sugar 10lb bag"] = 99;
+  });
+}
+
+test("reset is turned off unless ADMIN_RESET_TOKEN is set (and long enough)", async () => {
+  const { reset } = await m();
+  delete process.env.ADMIN_RESET_TOKEN;
+  assert.equal((await call(reset, { body: { token: "anything-at-all" } })).status, 404);
+  process.env.ADMIN_RESET_TOKEN = "short";
+  assert.equal((await call(reset, { body: { token: "short" } })).status, 404);
+});
+
+test("reset refuses a missing or wrong code and changes nothing", async () => {
+  const { reset, store } = await m();
+  process.env.ADMIN_RESET_TOKEN = "correct-horse-battery";
+  await seedState();
+  for (const body of [{}, { token: "" }, { token: "wrong-code-entirely" }, { token: 12345 }]) {
+    assert.equal((await call(reset, { body })).status, 403);
+  }
+  const db = await store.loadDB();
+  assert.equal(db.orders.length, 1);
+  assert.equal(db.inventory["Sugar 10lb bag"], 99);
+});
+
+test("reset clears the demo, restores stock, and keeps the saved Vault", async () => {
+  const { reset, store, policy } = await m();
+  process.env.ADMIN_RESET_TOKEN = "correct-horse-battery";
+  await seedState();
+  const res = await call(reset, { body: { token: "correct-horse-battery" } });
+  assert.equal(res.status, 200);
+  const db = await store.loadDB();
+  assert.equal(db.intents.length, 0);
+  assert.equal(db.orders.length, 0);
+  assert.equal(db.disputes.length, 0);
+  assert.equal(db.vault.vaultId, "VAULT-1");
+  assert.deepEqual(db.inventory, policy.initialInventory());
+  assert.deepEqual(db.ledger.map((l) => l.eventType), ["DEMO_RESET"]);
+  delete process.env.ADMIN_RESET_TOKEN;
 });

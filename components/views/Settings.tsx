@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Button, Card, CardHeader, Pill } from "@/components/ui";
 import { AgentMark, BrandTile, Lit, ProductTile, Window } from "@/components/kit";
 import { IconBell, IconCheck, IconExternal } from "@/components/icons";
@@ -83,6 +83,8 @@ export function SettingsView({ app }: { app: RelayPay }) {
           </ol>
         )}
       </Card>
+
+      {config.resetEnabled && <ResetDemo app={app} />}
 
       <div className="settings-col">
       <Card>
@@ -213,6 +215,27 @@ export function SettingsView({ app }: { app: RelayPay }) {
       </Card>
       </div>
     </div>
+  );
+}
+
+function ResetDemo({ app }: { app: RelayPay }) {
+  const [code, setCode] = useState("");
+  return (
+    <Card className="settings-vault">
+      <CardHeader title="Reset the demo (team only)" subtitle="Clears proposals, orders, disputes and the ledger and restores starting stock. The saved PayPal is kept." />
+      <form
+        className="inline-form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          void app.actions.resetDemo(code).then((ok) => ok && setCode(""));
+        }}
+      >
+        <input className="input" type="password" autoComplete="off" placeholder="Reset code" value={code} onChange={(e) => setCode(e.target.value)} />
+        <Button type="submit" variant="ghost" disabled={!code} loading={app.busy["reset-demo"]}>
+          Reset demo
+        </Button>
+      </form>
+    </Card>
   );
 }
 
