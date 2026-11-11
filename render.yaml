@@ -35,6 +35,8 @@ services:
         sync: false
       - key: CHANNEL3_API_KEY
         sync: false
+      - key: ALERT_WEBHOOK_URL
+        sync: false
       - key: ZAPIER_WEBHOOK_URL
         sync: false
       - key: ALLOW_LIVE

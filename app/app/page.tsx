@@ -5,6 +5,7 @@ import { useRelayPay } from "@/components/useRelayPay";
 import { Button, Callout, ConfirmDialog, Dot, Spinner, ThemeToggle, ToastStack } from "@/components/ui";
 import {
   IconBag,
+  IconBell,
   IconHome,
   IconList,
   IconMenu,
@@ -176,9 +177,11 @@ export default function Console() {
               <Dot tone={data?.config.channel3 ? "ok" : "neutral"} />
             </li>
             <li>
-              <BrandTile name="zapier" size="sm" />
-              <span className="k-status-label">{data?.config.zapier ? "Zapier alerts on" : "Zapier alerts off"}</span>
-              <Dot tone={data?.config.zapier ? "ok" : "neutral"} />
+              <span className="k-status-glyph">
+                <IconBell size={13} />
+              </span>
+              <span className="k-status-label">{data?.config.alerts ? `${data.config.alertsChannel} alerts on` : "Owner alerts off"}</span>
+              <Dot tone={data?.config.alerts ? "ok" : "neutral"} />
             </li>
           </ul>
           <ThemeToggle />

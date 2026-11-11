@@ -39,7 +39,7 @@ export default function PrivacyPage() {
             <strong>Channel3</strong>, when enabled, receives a product name to look up market prices.
           </li>
           <li>
-            <strong>Zapier</strong>, when enabled, receives alert titles, messages, amounts and a link back to RelayPay.
+            <strong>The owner alert channel</strong> (Discord, Slack, ntfy.sh or Zapier), when enabled, receives alert titles, messages and a link back to RelayPay.
           </li>
           <li>
             <strong>Hosting</strong> (Render, and Neon for the database) stores and serves the app.

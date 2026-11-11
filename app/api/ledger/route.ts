@@ -4,7 +4,7 @@ import { env, isSandbox } from "@/lib/env";
 import { AGENT_ID, AGENT_MODEL } from "@/lib/agents";
 import { CATALOG, DAILY_CAP_USD, HIGH_VALUE_USD, MAX_QUANTITY, POLICY_VERSION, spentTodayCents, stockRow, usd } from "@/lib/policy";
 import { channel3Enabled } from "@/lib/channel3";
-import { zapierEnabled } from "@/lib/notify";
+import { alertsChannel, alertsEnabled } from "@/lib/notify";
 import { route } from "@/lib/http";
 import { canonicalReceipt } from "@/lib/receipts";
 
@@ -46,7 +46,8 @@ export const GET = route(async () => {
       vaultResetAllowed: process.env.ALLOW_VAULT_RESET === "true",
       sandboxBuyerConfigured: !!env.sandboxBuyerEmail,
       channel3: channel3Enabled(),
-      zapier: zapierEnabled(),
+      alerts: alertsEnabled(),
+      alertsChannel: alertsChannel(),
       reconcileEnabled: process.env.ENABLE_RECONCILE === "true",
       resetEnabled: (process.env.ADMIN_RESET_TOKEN || "").length >= 12,
     },

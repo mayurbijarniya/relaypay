@@ -37,7 +37,8 @@ export type AppData = {
     vaultResetAllowed: boolean;
     sandboxBuyerConfigured: boolean;
     channel3: boolean;
-    zapier: boolean;
+    alerts: boolean;
+    alertsChannel: string;
     reconcileEnabled: boolean;
     resetEnabled: boolean;
   };
@@ -465,7 +466,7 @@ export function useRelayPay() {
     () =>
       run("notify-test", async () => {
         await post("/api/notify/test");
-        toast("ok", "Test notification sent", "Check the Zap you connected (email, SMS or Slack).");
+        toast("ok", "Test alert sent", "Check the channel you connected.");
         await refresh();
       }),
     [run, toast, refresh]

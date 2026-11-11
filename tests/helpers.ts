@@ -20,6 +20,7 @@ export function setupEnv(extra: Record<string, string> = {}) {
     LLM_API_KEY: "",
     CHANNEL3_API_KEY: "",
     ZAPIER_WEBHOOK_URL: "",
+    ALERT_WEBHOOK_URL: "",
     ALLOW_SIMULATOR: "false",
     DISABLE_RATE_LIMITS: "true",
     ...extra,
