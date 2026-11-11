@@ -3,7 +3,7 @@
 import { useState, type ReactNode } from "react";
 import { Button, Card, CardHeader, Pill } from "@/components/ui";
 import { AgentMark, BrandTile, Lit, ProductTile, Window } from "@/components/kit";
-import { IconBell, IconCheck, IconExternal } from "@/components/icons";
+import { IconBell, IconCheck, IconExternal, IconRefresh } from "@/components/icons";
 import { dateTime, money } from "@/lib/format";
 import type { RelayPay } from "@/components/useRelayPay";
 
@@ -221,19 +221,55 @@ export function SettingsView({ app }: { app: RelayPay }) {
 function ResetDemo({ app }: { app: RelayPay }) {
   const [code, setCode] = useState("");
   return (
-    <Card className="settings-vault">
-      <CardHeader title="Reset the demo (team only)" subtitle="Clears proposals, orders, disputes and the ledger and restores starting stock. The saved PayPal is kept." />
+    <Card className="settings-vault reset-card">
+      <CardHeader
+        icon={<IconRefresh size={16} />}
+        title="Reset the demo"
+        subtitle="Start the shared demo from a clean state before a recording or a fresh round of judging."
+        actions={<Pill tone="warn">Team only</Pill>}
+      />
+      <div className="reset-lists">
+        <div>
+          <strong>Clears</strong>
+          <ul>
+            <li>Agent proposals and receipts</li>
+            <li>Orders, disputes and webhook events</li>
+            <li>The ledger and rate limits</li>
+            <li>Stock, back to its starting levels</li>
+          </ul>
+        </div>
+        <div>
+          <strong>Keeps</strong>
+          <ul>
+            <li>The saved PayPal (Vault)</li>
+            <li>All settings and connections</li>
+            <li>Anything already in PayPal</li>
+          </ul>
+        </div>
+      </div>
       <form
-        className="inline-form"
+        className="reset-form"
         onSubmit={(e) => {
           e.preventDefault();
           void app.actions.resetDemo(code).then((ok) => ok && setCode(""));
         }}
       >
-        <input className="input" type="password" autoComplete="off" placeholder="Reset code" value={code} onChange={(e) => setCode(e.target.value)} />
-        <Button type="submit" variant="ghost" disabled={!code} loading={app.busy["reset-demo"]}>
-          Reset demo
-        </Button>
+        <label htmlFor="reset-code">Team reset code</label>
+        <div className="reset-form-row">
+          <input
+            id="reset-code"
+            className="input"
+            type="password"
+            autoComplete="off"
+            placeholder="Reset code"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+          />
+          <Button type="submit" variant="danger" icon={<IconRefresh size={14} />} disabled={!code} loading={app.busy["reset-demo"]}>
+            Reset demo
+          </Button>
+        </div>
+        <p className="muted small">This can't be undone. The code is the ADMIN_RESET_TOKEN set on the server.</p>
       </form>
     </Card>
   );
