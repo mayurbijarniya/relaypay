@@ -35,7 +35,14 @@ services:
         sync: false
       - key: CHANNEL3_API_KEY
         sync: false
+      - key: ALERT_WEBHOOK_URL
+        sync: false
       - key: ZAPIER_WEBHOOK_URL
+        sync: false
+      # Email alerts through Resend; both are needed. Leave empty to keep email off.
+      - key: RESEND_API_KEY
+        sync: false
+      - key: ALERT_EMAIL_TO
         sync: false
       - key: ALLOW_LIVE
         value: "false"

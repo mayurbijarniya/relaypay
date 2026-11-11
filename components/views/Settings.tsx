@@ -175,13 +175,13 @@ export function SettingsView({ app }: { app: RelayPay }) {
             detail={config.channel3 ? "On · the agent compares supplier prices with live retail offers" : "Off · set CHANNEL3_API_KEY to enable the market price check"}
           />
           <Connection
-            ok={config.zapier}
-            warn={!config.zapier}
-            mark={<BrandTile name="zapier" />}
-            title="Zapier owner alerts (optional)"
-            detail={config.zapier ? "On · approvals, payments and disputes notify you" : "Off · set ZAPIER_WEBHOOK_URL to a Zapier Catch Hook"}
+            ok={config.alerts}
+            warn={!config.alerts}
+            mark={<span className="k-status-glyph k-status-glyph--lg"><IconBell size={16} /></span>}
+            title="Owner alerts (optional)"
+            detail={config.alerts ? `On · approvals, payments and disputes go to ${config.alertsChannel}` : "Off · set ALERT_WEBHOOK_URL (Discord, Slack, ntfy.sh) or RESEND_API_KEY and ALERT_EMAIL_TO"}
             action={
-              config.zapier ? (
+              config.alerts ? (
                 <Button size="sm" variant="ghost" icon={<IconBell size={14} />} loading={app.busy["notify-test"]} onClick={() => void app.actions.testNotification()}>
                   Send test
                 </Button>

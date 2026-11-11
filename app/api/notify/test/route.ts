@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { addLedger, mutate, HttpError } from "@/lib/store";
-import { notifyOwner, zapierEnabled } from "@/lib/notify";
+import { alertsChannel, alertsEnabled, notifyOwner } from "@/lib/notify";
 import { checkRateLimit, clientIp } from "@/lib/rateLimit";
 import { route } from "@/lib/http";
 
-/** Send a test notification through the owner's Zapier hook. */
+/** Send a test alert to the owner's alert channel. */
 export const POST = route(async (req: Request) => {
-  if (!zapierEnabled()) throw new HttpError(400, "Set ZAPIER_WEBHOOK_URL to a Zapier Catch Hook URL (https://hooks.zapier.com/…) first.");
+  if (!alertsEnabled()) throw new HttpError(400, "Set ALERT_WEBHOOK_URL (Discord, Slack or ntfy.sh) or RESEND_API_KEY and ALERT_EMAIL_TO first.");
   const ip = clientIp(req);
   await mutate((db) => {
     const limit = checkRateLimit(db, "paypal", ip);
@@ -17,7 +17,7 @@ export const POST = route(async (req: Request) => {
     message: "If you can read this, RelayPay can reach you when a purchase or dispute needs you.",
     view: "settings",
   });
-  if (!result.sent) throw new HttpError(502, result.error || "Zapier did not accept the notification.");
-  await mutate((db) => addLedger(db, { actor: "SYSTEM", eventType: "OWNER_NOTIFIED", note: "Test notification sent through Zapier" }));
+  if (!result.sent) throw new HttpError(502, result.error || "The alert channel did not accept the message.");
+  await mutate((db) => addLedger(db, { actor: "SYSTEM", eventType: "OWNER_NOTIFIED", note: `Test alert sent through ${alertsChannel()}` }));
   return NextResponse.json({ sent: true });
 });

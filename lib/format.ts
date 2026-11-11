@@ -250,7 +250,7 @@ const EVENT_LABEL: Record<string, string> = {
   STOCK_CONSUMED: "A café day used up stock",
   STOCK_RECEIVED: "Stock received from a paid order",
   RECONCILED: "Payments reconciled with PayPal Transaction Search",
-  OWNER_NOTIFIED: "Notification sent (Zapier)",
+  OWNER_NOTIFIED: "Owner alert sent",
   DEMO_RESET: "Demo data reset",
   "CUSTOMER.DISPUTE.UPDATED": "PayPal updated the dispute",
   "CUSTOMER.DISPUTE.RESOLVED": "PayPal resolved the dispute",

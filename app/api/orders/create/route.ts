@@ -181,6 +181,7 @@ export const POST = route(async (req: Request) => {
     amount: result.record.amount,
     view: "receipts",
     reference: result.record.captureId,
+    receiptHash: plan.receiptHash,
   });
   return NextResponse.json({ order: result.record, captured: true });
 });

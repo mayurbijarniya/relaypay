@@ -14,7 +14,7 @@ const TOC = [
   ["verify-yourself", "Verify a receipt yourself"],
   ["paypal", "PayPal APIs used"],
   ["agents", "The two AI agents"],
-  ["integrations", "Channel3, Zapier and the stack"],
+  ["integrations", "Channel3, alerts and the stack"],
   ["limits", "What a receipt does and doesn't show"],
   ["run", "Run it locally"],
 ] as const;
@@ -47,7 +47,7 @@ const ENV: Array<[string, string]> = [
   ["PAYPAL_WEBHOOK_ID", "Optional. Turns on signed webhooks; disputes can always be imported by ID."],
   ["SANDBOX_BUYER_EMAIL", "Optional. Lets RelayPay open sandbox disputes for testing."],
   ["CHANNEL3_API_KEY", "Optional. Market price check for the agent."],
-  ["ZAPIER_WEBHOOK_URL, NEXT_PUBLIC_BASE_URL", "Optional. Owner alerts through a Zapier Catch Hook, with links back to the app."],
+  ["ALERT_WEBHOOK_URL, NEXT_PUBLIC_BASE_URL", "Optional. Owner alerts to a Discord, Slack or ntfy.sh URL, with links back to the app."],
   ["DATABASE_URL", "Optional. Postgres (Neon or Render). Without it, data lives in data/db.json."],
 ];
 
@@ -220,14 +220,14 @@ export default function DocsPage() {
           </section>
 
           <section id="integrations" className="docs-section">
-            <h2>Channel3, Zapier and the stack</h2>
+            <h2>Channel3, alerts and the stack</h2>
             <ul className="docs-list">
               <li>
                 <strong>Channel3</strong> gives the purchasing agent a market price check: the supplier&apos;s price against the median of live retail offers. The result is
                 sealed into the receipt.
               </li>
               <li>
-                <strong>Zapier</strong> alerts the owner by email, Slack or SMS when an order needs approval, a payment is captured, or a dispute arrives or is answered.
+                <strong>Owner alerts</strong> go to Discord, Slack or ntfy.sh (a Zapier Catch Hook also works) when an order needs approval, a payment is captured, or a dispute arrives or is answered.
               </li>
               <li>
                 <strong>AG Grid</strong> draws the receipts and ledger tables, with search, sorting and CSV export.

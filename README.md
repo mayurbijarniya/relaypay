@@ -10,7 +10,7 @@ Built for the PayPal AI Hackathon. **PayPal sandbox only; no real money moves.**
 
 | | |
 |---|---|
-| **Hosted demo** | `[paste Render URL here]` (the console is at `/app`) |
+| **Hosted demo** | https://relaypay-h1h0.onrender.com (the console is at `/app`) |
 | **Video** | `[paste YouTube URL here]` |
 | **Docs** | `/docs` on the hosted demo: the flow, every PayPal call, both agents, verifying a receipt yourself |
 | **License** | MIT |
@@ -36,7 +36,7 @@ The free hosting tier sleeps when idle, so the first visit can take about a minu
 - **No login and no credentials are needed.** The hosted demo uses PayPal's **sandbox** only, and no real money moves. The café's PayPal is already saved with Vault, so **Charge with PayPal** works without a PayPal login.
 - Every step in the list above works on the hosted demo. If the agent says nothing is running low, press **Run a café day** first.
 - The demo is **shared**: every visitor sees the same café, and the daily spend cap and request limits are shared too (raised on the hosted demo). If you see "Over today's cap" or "reached today's limit", it resets at 00:00 UTC.
-- **Disputes → Run sample** is the way to see the dispute agent. Filing a *real* sandbox dispute needs a PayPal sandbox buyer login: **[team: add a dedicated sandbox buyer email and password here, or delete this line]**.
+- **Disputes → Run sample** is the way to see the dispute agent. Filing a *real* sandbox dispute needs a PayPal sandbox buyer login, which is not shared publicly; the sample runs the same dispute agent on a real captured payment.
 - The demo stays live until judging ends on December 15, 2026.
 
 ---
@@ -56,8 +56,8 @@ In the demo, the café's approval happens on the same screen; in production it w
 
 Agents are starting to order on people's behalf. When a payment is disputed as unauthorized, the merchant usually has
 little to show: no record of what the agent proposed, who approved it, or whether the approved order is what was
-charged. Nearly two-thirds of merchants in a PayPal-commissioned study of 498 US merchants say a liability framework for
-agent-initiated purchases is urgently needed.
+charged. In PayPal's [Agentic Commerce Pulse Report](https://www.paypal.com/us/brc/article/agentic-commerce-pulse-report-findings)
+(498 US merchants), almost two-thirds agree a standardized liability framework for AI-initiated purchases is needed.
 
 Dispute tools argue after the fact. RelayPay brings the signed-mandate idea (AP2) to PayPal merchants today and
 creates the record **before the purchase**: the café's approval is sealed when it happens and its fingerprint is stored
@@ -137,7 +137,7 @@ The hackathon asks every entry to name each AI tool, model or service it used, a
 | Channel3 API | The purchasing agent's optional market price check. |
 | No other model | Receipt hashing, price math, policy checks and PayPal verification are deterministic code, not AI. |
 
-Development tools: **[team: name any AI coding assistants or other AI tools used to build RelayPay, and what each was used for. The rules require this.]**
+Development tools: Claude Code (Anthropic) was used by Pratham Rathod during the hackathon to review the codebase, write the test suite and CI, fix bugs found in testing (including the Postgres receipt-hash fix), and write documentation. **[Mayur: add any AI coding assistants you used to build RelayPay's first version, and what for. The rules require every AI tool to be named.]**
 
 ## Partners and integrations
 
@@ -146,7 +146,7 @@ Development tools: **[team: name any AI coding assistants or other AI tools used
 | **AG Grid** (Community 32) | Receipts, ledger and webhook tables: quick filter, CSV export, external actor filter, custom renderers, pinned actions, auto-height rows, pagination | always on |
 | **Render** | Blueprint with a web service | deploy |
 | **Channel3** | Market price check sealed into the receipt | `CHANNEL3_API_KEY` |
-| **Zapier** (optional, not a hackathon sponsor) | Alerts when the café's approval is needed, an order is charged, a dispute arrives, evidence is sent | `ZAPIER_WEBHOOK_URL` |
+| **Owner alerts** (optional) | A Discord, Slack or ntfy.sh message and/or an email (through [Resend](https://resend.com)) when the café's approval is needed, an order is charged (with a link to the public receipt), a dispute arrives, evidence is sent | `ALERT_WEBHOOK_URL`, `RESEND_API_KEY` + `ALERT_EMAIL_TO` |
 
 ---
 
@@ -178,7 +178,7 @@ Scripts: `npm run check` (types + tests), `npm test` (unit and route tests again
 1. Push the `relaypay/` folder as the repository root, then Render → **New → Blueprint**.
 2. Set `DATABASE_URL` (Neon recommended: Render's free Postgres expires after about 30 days, which would fall inside
    judging), `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `LLM_API_KEY`, `NEXT_PUBLIC_BASE_URL`, and optionally
-   `CHANNEL3_API_KEY`, `ZAPIER_WEBHOOK_URL`, `SANDBOX_BUYER_EMAIL`.
+   `CHANNEL3_API_KEY`, `ALERT_WEBHOOK_URL`, `SANDBOX_BUYER_EMAIL`.
 3. Register `https://<your-app>/api/webhooks/paypal` in the PayPal dashboard for `PAYMENT.CAPTURE.COMPLETED` and
    `CUSTOMER.DISPUTE.*`; set its ID as `PAYPAL_WEBHOOK_ID`.
 4. Connect Vault once (Settings, as the café). It's then locked, and judges can charge orders without logging in.
@@ -197,7 +197,8 @@ Scripts: `npm run check` (types + tests), `npm test` (unit and route tests again
 | `PAYPAL_WEBHOOK_ID` | when deployed | Webhook signature verification |
 | `SANDBOX_BUYER_EMAIL` | no | Open sandbox disputes from RelayPay (email only, never a password) |
 | `CHANNEL3_API_KEY` | no | Market price check |
-| `ZAPIER_WEBHOOK_URL` | no | Alerts (`https://hooks.zapier.com/…`) |
+| `RESEND_API_KEY`, `ALERT_EMAIL_TO` | no | Email alerts through Resend (both needed; up to 3 comma-separated recipients). Without a verified domain Resend only delivers to the address you signed up with. `ALERT_EMAIL_FROM` sets the sender once a domain is verified |
+| `ALERT_WEBHOOK_URL` | no | Owner alerts: a Discord webhook, Slack incoming webhook or `https://ntfy.sh/<topic>` URL (a Zapier Catch Hook in `ZAPIER_WEBHOOK_URL` still works) |
 | `ALLOW_VAULT_RESET` | no | Allow reconnecting Vault after it's locked |
 | `ADMIN_RESET_TOKEN` | no | 12+ characters. Turns on the team-only **Reset the demo** control in Settings; leave unset to keep it off |
 | `ALLOW_SIMULATOR` | no | Accept unsigned simulator webhooks (keep `false` when public) |
@@ -224,7 +225,7 @@ lib/agents.ts                      both tool-calling agents
 lib/policy.ts, lib/receipts.ts     catalog, inventory and approval checks; canonical receipt + SHA-256 (unit tested)
 lib/disputeService.ts              dispute pipeline (draft, webhook, sync, sandbox create)
 lib/store.ts                       Postgres or file storage with atomic writes
-lib/channel3.ts, lib/notify.ts     sponsors
+lib/channel3.ts, lib/notify.ts     market price check, owner alerts
 lib/paypal/                        client, orders, vault, disputes, reporting
 tests/, scripts/                   node:test suites; seed and reset
 docs/                              README screenshots
@@ -260,7 +261,7 @@ For the team, while judges are using it (through December 15):
 - The receipt is tamper-evident, not a signature: it shows the record existed at payment time and is unchanged.
 - Evidence submission is one-shot. Creating a dispute from RelayPay needs PayPal's dispute-create permission; the buyer-account route always works.
 - Transaction Search indexes payments with a delay of up to a few hours.
-- Zapier alerts need a Zapier plan that includes Webhooks by Zapier; without one, RelayPay works the same and simply sends no alerts.
+- Owner alerts are optional: without `ALERT_WEBHOOK_URL`, RelayPay works the same and simply sends no alerts.
 
 ## License
 
