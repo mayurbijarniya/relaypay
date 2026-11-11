@@ -57,7 +57,7 @@ export default function PrivacyPage() {
 
         <h2>Questions</h2>
         <p>
-          Email <a href="mailto:hello@relaypay.example">hello@relaypay.example</a>.
+          Open an issue at <a href="https://github.com/mayurbijarniya/relaypay/issues">github.com/mayurbijarniya/relaypay</a>.
         </p>
         <p className="muted small">Last updated November 2026.</p>
       </article>
