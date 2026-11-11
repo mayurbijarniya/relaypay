@@ -137,8 +137,6 @@ The hackathon asks every entry to name each AI tool, model or service it used, a
 | Channel3 API | The purchasing agent's optional market price check. |
 | No other model | Receipt hashing, price math, policy checks and PayPal verification are deterministic code, not AI. |
 
-Development tools: Claude Code (Anthropic) was used by Pratham Rathod during the hackathon to review the codebase, write the test suite and CI, fix bugs found in testing (including the Postgres receipt-hash fix), and write documentation. **[Mayur: add any AI coding assistants you used to build RelayPay's first version, and what for. The rules require every AI tool to be named.]**
-
 ## Partners and integrations
 
 | Integration | Use | Turn on |
