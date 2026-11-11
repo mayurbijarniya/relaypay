@@ -41,6 +41,9 @@ services:
         value: "false"
       - key: ALLOW_VAULT_RESET
         value: "false"
+      # Team-only "Reset the demo" in Settings. Pick 12+ random characters; unset keeps it off.
+      - key: ADMIN_RESET_TOKEN
+        sync: false
       # A hosted demo shared by many judges needs more headroom than the local defaults.
       - key: DAILY_CAP_USD
         value: "2000"

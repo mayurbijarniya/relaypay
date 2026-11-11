@@ -39,6 +39,7 @@ export type AppData = {
     channel3: boolean;
     zapier: boolean;
     reconcileEnabled: boolean;
+    resetEnabled: boolean;
   };
   policy: { version: string; dailyCap: string; highValueThreshold: string; maxQuantity: number; spentToday: string; remainingToday: string };
 };
@@ -426,6 +427,17 @@ export function useRelayPay() {
 
   // ----- Vault & settings ----------------------------------------------------
 
+  const resetDemo = useCallback(
+    (token: string) =>
+      run("reset-demo", async () => {
+        await post("/api/admin/reset", { token });
+        toast("ok", "Demo reset", "Proposals, orders, disputes and the ledger are cleared. The saved PayPal was kept.");
+        await refresh();
+        return true;
+      }),
+    [run, toast, refresh]
+  );
+
   const vaultSetup = useCallback(
     () =>
       run("vault-setup", async () => {
@@ -493,6 +505,7 @@ export function useRelayPay() {
       submitDispute,
       acceptDispute,
       vaultSetup,
+      resetDemo,
       vaultExchange,
       testNotification,
     },
