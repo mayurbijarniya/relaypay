@@ -33,6 +33,24 @@ export type MarketCheck = {
 };
 
 /**
+ * Copy with every object's keys in sorted order. Postgres JSONB does not keep
+ * key order (it stores keys by length, then alphabetically), so a receipt read
+ * back from the database has its nested objects in a different order than the
+ * one that was sealed. Sorting makes the hash independent of that order.
+ */
+function sortKeys(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(sortKeys);
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>)
+        .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+        .map(([k, v]) => [k, sortKeys(v)])
+    );
+  }
+  return value;
+}
+
+/**
  * Receipt is finalized ONLY on approval.
  * approvedBy + approvedAt + agent identity + policy version + the policy checks
  * that actually ran are added at approval time, then hashed.
@@ -55,12 +73,12 @@ export function canonicalReceipt(receipt: IntentReceipt): string {
     model: receipt.model || "unknown",
     policyVersion: receipt.policyVersion || "policy-v1",
     promptHash: receipt.promptHash || "",
-    policyChecks: receipt.policyChecks || null,
+    policyChecks: sortKeys(receipt.policyChecks || null),
     highValueConfirmed: receipt.highValueConfirmed === true,
   };
   // Added only when present, so receipts sealed before the market check existed
   // still hash to the same value.
-  if (receipt.marketCheck) canonical.marketCheck = receipt.marketCheck;
+  if (receipt.marketCheck) canonical.marketCheck = sortKeys(receipt.marketCheck);
   return JSON.stringify(canonical);
 }
 

@@ -121,6 +121,27 @@ test("refuses to charge a proposal that was never approved", async () => {
   assert.equal(net.created().length, 0);
 });
 
+test("charges a receipt whose nested keys were reordered by Postgres JSONB", async () => {
+  const { create, store, receipts } = await m();
+  await connectVault();
+  const marketCheck = { source: "channel3", query: "Oat milk", offerCount: 3, medianPrice: "20.00", lowestPrice: "18.00", catalogPrice: "24.00", verdict: "ABOVE_MARKET", checkedAt: "2026-11-10T00:00:00.000Z" };
+  const id = await approved({ marketCheck });
+  // JSONB keeps keys sorted by length, then alphabetically; mimic that on the stored copy.
+  const jsonbOrder = (o: Record<string, unknown>) =>
+    Object.fromEntries(Object.entries(o).sort(([a], [b]) => a.length - b.length || (a < b ? -1 : 1)));
+  await store.mutate((db) => {
+    const payload = db.intents.find((i) => i.id === id)!.receiptPayload;
+    payload.policyChecks = jsonbOrder(payload.policyChecks);
+    payload.marketCheck = jsonbOrder(payload.marketCheck);
+  });
+  const intent = await intentOf(id);
+  assert.notEqual(JSON.stringify(Object.keys(intent.receiptPayload.policyChecks)), JSON.stringify(Object.keys(intent.policyChecks!)), "the stored key order really differs");
+  assert.equal(receipts.hashReceipt(intent.receiptPayload), intent.receiptHash);
+  const res = await call(create, { body: { intentId: id } });
+  assert.equal(res.status, 200, JSON.stringify(res.json));
+  assert.equal(res.json.captured, true);
+});
+
 test("refuses to charge when the sealed receipt was altered after approval", async () => {
   const { create, store } = await m();
   await connectVault();
