@@ -118,7 +118,7 @@ Public pages: `/` (landing), `/docs` (how it works, PayPal APIs, verify a receip
 - **Payments v2**: get capture (PayPal's copy of `custom_id`)
 - **Disputes v1**: list, show, provide-evidence (PDF), accept-claim, escalate, sandbox require-evidence, sandbox create (`PayPal-Auth-Assertion`)
 - **Webhooks**: verify-webhook-signature; `PAYMENT.CAPTURE.COMPLETED`, `CUSTOMER.DISPUTE.CREATED/UPDATED/RESOLVED`
-- **Transaction Search**: reconciliation (counts only)
+- **Transaction Search**: optional reconciliation (`ENABLE_RECONCILE`; needs "Transaction search" enabled on the PayPal app; off on the hosted demo)
 
 The agents never hold PayPal credentials and never move money. Live PayPal is refused unless `ALLOW_LIVE=true`.
 
