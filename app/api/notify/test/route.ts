@@ -6,7 +6,7 @@ import { route } from "@/lib/http";
 
 /** Send a test alert to the owner's alert channel. */
 export const POST = route(async (req: Request) => {
-  if (!alertsEnabled()) throw new HttpError(400, "Set ALERT_WEBHOOK_URL to a Discord, Slack or ntfy.sh URL first.");
+  if (!alertsEnabled()) throw new HttpError(400, "Set ALERT_WEBHOOK_URL (Discord, Slack or ntfy.sh) or RESEND_API_KEY and ALERT_EMAIL_TO first.");
   const ip = clientIp(req);
   await mutate((db) => {
     const limit = checkRateLimit(db, "paypal", ip);

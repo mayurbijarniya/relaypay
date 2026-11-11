@@ -146,7 +146,7 @@ Development tools: Claude Code (Anthropic) was used by Pratham Rathod during the
 | **AG Grid** (Community 32) | Receipts, ledger and webhook tables: quick filter, CSV export, external actor filter, custom renderers, pinned actions, auto-height rows, pagination | always on |
 | **Render** | Blueprint with a web service | deploy |
 | **Channel3** | Market price check sealed into the receipt | `CHANNEL3_API_KEY` |
-| **Owner alerts** (optional) | A Discord, Slack or ntfy.sh message when the café's approval is needed, an order is charged, a dispute arrives, evidence is sent | `ALERT_WEBHOOK_URL` |
+| **Owner alerts** (optional) | A Discord, Slack or ntfy.sh message and/or an email (through [Resend](https://resend.com)) when the café's approval is needed, an order is charged (with a link to the public receipt), a dispute arrives, evidence is sent | `ALERT_WEBHOOK_URL`, `RESEND_API_KEY` + `ALERT_EMAIL_TO` |
 
 ---
 
@@ -197,6 +197,7 @@ Scripts: `npm run check` (types + tests), `npm test` (unit and route tests again
 | `PAYPAL_WEBHOOK_ID` | when deployed | Webhook signature verification |
 | `SANDBOX_BUYER_EMAIL` | no | Open sandbox disputes from RelayPay (email only, never a password) |
 | `CHANNEL3_API_KEY` | no | Market price check |
+| `RESEND_API_KEY`, `ALERT_EMAIL_TO` | no | Email alerts through Resend (both needed; up to 3 comma-separated recipients). Without a verified domain Resend only delivers to the address you signed up with. `ALERT_EMAIL_FROM` sets the sender once a domain is verified |
 | `ALERT_WEBHOOK_URL` | no | Owner alerts: a Discord webhook, Slack incoming webhook or `https://ntfy.sh/<topic>` URL (a Zapier Catch Hook in `ZAPIER_WEBHOOK_URL` still works) |
 | `ALLOW_VAULT_RESET` | no | Allow reconnecting Vault after it's locked |
 | `ADMIN_RESET_TOKEN` | no | 12+ characters. Turns on the team-only **Reset the demo** control in Settings; leave unset to keep it off |

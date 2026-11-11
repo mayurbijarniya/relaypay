@@ -179,7 +179,7 @@ export function SettingsView({ app }: { app: RelayPay }) {
             warn={!config.alerts}
             mark={<span className="k-status-glyph k-status-glyph--lg"><IconBell size={16} /></span>}
             title="Owner alerts (optional)"
-            detail={config.alerts ? `On · approvals, payments and disputes go to ${config.alertsChannel}` : "Off · set ALERT_WEBHOOK_URL to a Discord, Slack or ntfy.sh URL"}
+            detail={config.alerts ? `On · approvals, payments and disputes go to ${config.alertsChannel}` : "Off · set ALERT_WEBHOOK_URL (Discord, Slack, ntfy.sh) or RESEND_API_KEY and ALERT_EMAIL_TO"}
             action={
               config.alerts ? (
                 <Button size="sm" variant="ghost" icon={<IconBell size={14} />} loading={app.busy["notify-test"]} onClick={() => void app.actions.testNotification()}>

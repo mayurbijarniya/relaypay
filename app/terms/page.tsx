@@ -39,7 +39,7 @@ export default function TermsPage() {
         </p>
 
         <h2>Trademarks</h2>
-        <p>PayPal, Discord, Slack, ntfy, Zapier, Channel3, Neon, Render and AG Grid are trademarks of their owners. RelayPay is not affiliated with or endorsed by them.</p>
+        <p>PayPal, Discord, Slack, ntfy, Resend, Zapier, Channel3, Neon, Render and AG Grid are trademarks of their owners. RelayPay is not affiliated with or endorsed by them.</p>
 
         <h2>Contact</h2>
         <p>
