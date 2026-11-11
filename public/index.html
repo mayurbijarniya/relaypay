@@ -170,7 +170,7 @@
   <section class="hero hero--centred" aria-labelledby="hero-h">
     <div class="wrap"><div class="hero-text">
       <div class="hero__c">
-        <a class="pill" href="#integrations"><span>Built on 6 PayPal APIs</span><span class="muted">See the integrations</span></a>
+        <a class="pill" href="#integrations"><span>Built on 5 PayPal APIs</span><span class="muted">See the integrations</span></a>
         <h1 id="hero-h" aria-label="AI reordering for café suppliers"><span class="mark" data-mark="stack" aria-hidden="true"></span>AI reordering for café suppliers</h1>
         <p class="hero__lead">An agent proposes each café's next order, the café approves it, and PayPal keeps a fingerprint of that approval.</p>
         <div class="btn-row"><a class="btn btn--primary" href="/app">Open the live demo</a><a class="btn btn--secondary" href="#receipt">See the receipt</a></div>
@@ -406,14 +406,14 @@
       <div class="grid">
         <h2 id="integrations-h" class="span-6">Works with PayPal and your tools</h2>
         <div class="span-6 start-7 stack-4">
-          <p class="muted">RelayPay calls Vault, Orders, Payments, Disputes, Webhooks and Transaction Search from its own server. The agents never hold credentials or move money.</p>
-          <p class="muted">Channel3 checks market prices, owner alerts go to Discord, Slack or ntfy, AG Grid draws the tables.</p>
+          <p class="muted">RelayPay calls Vault, Orders, Payments, Disputes and Webhooks from its own server, plus Transaction Search for reconciliation when it is enabled. The agents never hold credentials or move money.</p>
+          <p class="muted">Channel3 checks market prices, owner alerts arrive by email, Discord, Slack or ntfy, AG Grid draws the tables.</p>
         </div>
       </div>
       <div class="frame frame--lit dg-frame">
         <div class="dg" data-diagram><script type="application/json">{
             "layout": "hub",
-            "alt": "RelayPay connects to PayPal Orders, Vault, Disputes and Webhooks, Channel3, AG Grid and Render.",
+            "alt": "RelayPay connects to PayPal Orders, Vault, Disputes and Webhooks, Channel3, email alerts, AG Grid and Render.",
             "center": { "label": "RelayPay", "tone": "plain" },
             "spokes": [
               { "label": "PayPal Orders", "icon": "paypal" },
@@ -421,6 +421,7 @@
               { "label": "PayPal Disputes", "icon": "paypal" },
               { "label": "Webhooks", "icon": "paypal" },
               { "label": "Channel3", "icon": "text:C3" },
+              { "label": "Email alerts", "icon": "text:@" },
               { "label": "AG Grid", "icon": "text:AG" },
               { "label": "Render", "icon": "si:render" }
             ]
@@ -449,7 +450,7 @@
         <div class="span-2 footer__col"><h4>Product</h4><ul><li><a href="/app">Console</a></li><li><a href="/verify">Verify a receipt</a></li></ul></div>
         <div class="span-2 footer__col"><h4>Resources</h4><ul><li><a href="/docs">Docs</a></li><li><a href="/docs#paypal">PayPal APIs</a></li></ul></div>
         <div class="span-2 footer__col"><h4>Legal</h4><ul><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul></div>
-        <div class="span-2 footer__col"><h4>Contact</h4><ul><li><a href="mailto:hello@relaypay.example">Email us</a></li></ul></div>
+        <div class="span-2 footer__col"><h4>Contact</h4><ul><li><a href="https://github.com/mayurbijarniya/relaypay" target="_blank" rel="noreferrer">GitHub</a></li><li><a href="https://github.com/mayurbijarniya/relaypay/issues" target="_blank" rel="noreferrer">Report an issue</a></li></ul></div>
       </div>
       <div class="footer__legal">
         <span>&copy; 2026 RelayPay · PayPal sandbox only, no real money</span>
