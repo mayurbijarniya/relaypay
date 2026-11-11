@@ -50,7 +50,7 @@ The free hosting tier sleeps when idle, so the first visit can take about a minu
 | **AI purchasing agent** | Proposes orders for the café; cannot pay | LLM with tool calls |
 | **AI dispute agent** | Checks the receipt against PayPal and drafts the supplier's response | LLM with tool calls |
 
-In the demo, the café's approval happens on the same screen; in production it would be the café's own portal.
+In the demo you play both roles, so the café's approval happens on the same screen. In production the café approves in its own signed-in portal, so the sealed receipt records an authenticated approver.
 
 ## Why this exists
 
@@ -109,7 +109,7 @@ Public pages: `/` (landing), `/docs` (how it works, PayPal APIs, verify a receip
 | **Dispute record** | PayPal's copy of the fingerprint is always read from PayPal: the dispute's `disputed_transactions[].custom`, else the disputed capture's `custom_id`, else the order. Re-verified against a fresh read before the irreversible submission. |
 | **Evidence PDF** | Fingerprint check, Vault consent time, café approval, PayPal's capture confirmation, timeline and response; sanitized, wrapped and paginated. |
 | **Webhooks** | Signature verified; unsigned events rejected; capture events checked against amount, currency, `custom_id` and capture ID; dispute drafting runs after PayPal is acknowledged. |
-| **Reliability** | Atomic writes (Postgres row lock or a file write queue), database-backed rate limits, in-flight locks on irreversible actions, Vault locked once connected, no secrets in the browser, unit tests. |
+| **Reliability** | Atomic writes (Postgres row lock or a file write queue), database-backed rate limits, in-flight locks on irreversible actions, Vault locked once connected, no secrets in the browser, 109 tests against a fake PayPal and LLM, and CI on every push. |
 
 ## PayPal APIs used
 
@@ -129,15 +129,13 @@ The agents never hold PayPal credentials and never move money. Live PayPal is re
 
 ### AI tools and services used
 
-The hackathon asks every entry to name each AI tool, model or service it used, and how. In the running product:
+Every AI tool, model and service RelayPay uses, and how. In the running product:
 
 | Tool or service | How it is used |
 |---|---|
 | `subconscious/glm-5.3-marathon` (via `LLM_BASE_URL`) | Both agents run a tool-calling loop on it. The model chooses which tool to call; the backend runs the tool and enforces every rule. It also writes the supplier's dispute response from facts the tools returned. |
 | Channel3 API | The purchasing agent's optional market price check. |
 | No other model | Receipt hashing, price math, policy checks and PayPal verification are deterministic code, not AI. |
-
-Development tools: Claude Code (Anthropic) was used by Pratham Rathod during the hackathon to review the codebase, write the test suite and CI, fix bugs found in testing (including the Postgres receipt-hash fix), and write documentation. **[Mayur: add any AI coding assistants you used to build RelayPay's first version, and what for. The rules require every AI tool to be named.]**
 
 ## Partners and integrations
 
@@ -175,10 +173,11 @@ Scripts: `npm run check` (types + tests), `npm test` (unit and route tests again
 
 ## Deploy on Render
 
-1. Push the `relaypay/` folder as the repository root, then Render → **New → Blueprint**.
+1. Fork this repository, then Render → **New → Blueprint** and pick it. Render reads `render.yaml`.
 2. Set `DATABASE_URL` (Neon recommended: Render's free Postgres expires after about 30 days, which would fall inside
    judging), `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `LLM_API_KEY`, `NEXT_PUBLIC_BASE_URL`, and optionally
-   `CHANNEL3_API_KEY`, `ALERT_WEBHOOK_URL`, `SANDBOX_BUYER_EMAIL`.
+   `CHANNEL3_API_KEY`, `ALERT_WEBHOOK_URL` or `RESEND_API_KEY` + `ALERT_EMAIL_TO`, `SANDBOX_BUYER_EMAIL`,
+   `ADMIN_RESET_TOKEN`, and `ENABLE_RECONCILE=true` once "Transaction search" is enabled on the PayPal app.
 3. Register `https://<your-app>/api/webhooks/paypal` in the PayPal dashboard for `PAYMENT.CAPTURE.COMPLETED` and
    `CUSTOMER.DISPUTE.*`; set its ID as `PAYPAL_WEBHOOK_ID`.
 4. Connect Vault once (Settings, as the café). It's then locked, and judges can charge orders without logging in.

@@ -56,6 +56,6 @@ services:
         value: "2000"
       - key: RATE_LIMIT_MULTIPLIER
         value: "5"
-      # Needs "Transaction search" enabled on the PayPal app. Leave off until it is.
+      # Needs "Transaction search" enabled on the PayPal app (PayPal refused it on the demo's app). Leave off until it works.
       - key: ENABLE_RECONCILE
         value: "false"
