@@ -34,7 +34,7 @@ const APIS: Array<[string, string, string]> = [
   ["Payments v2", "GET /v2/payments/captures/{id}", "Confirm the capture's status and amount."],
   ["Disputes v1", "GET /v1/customer/disputes · GET /v1/customer/disputes/{id} · POST …/provide-evidence · POST …/accept-claim", "Import cases, read PayPal's view, send evidence or refund."],
   ["Webhooks", "POST /v1/notifications/verify-webhook-signature", "Every incoming event's signature is verified before it is stored."],
-  ["Transaction Search", "GET /v1/reporting/transactions", "Reconcile captures against PayPal's reporting ledger."],
+  ["Transaction Search", "GET /v1/reporting/transactions", "Optional: reconcile captures against PayPal's reporting ledger (ENABLE_RECONCILE, needs Transaction search on the PayPal app; off on the hosted demo)."],
 ];
 
 const PURCHASE_TOOLS = ["get_low_stock_products", "search_catalog", "check_inventory", "check_budget", "compare_market_prices", "propose_purchase"];

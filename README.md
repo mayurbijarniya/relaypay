@@ -11,7 +11,7 @@ Built for the PayPal AI Hackathon. **PayPal sandbox only; no real money moves.**
 | | |
 |---|---|
 | **Hosted demo** | https://relaypay-h1h0.onrender.com (the console is at `/app`) |
-| **Video** | `[paste YouTube URL here]` |
+| **Video** | https://youtu.be/i54x70OiW3k |
 | **Docs** | `/docs` on the hosted demo: the flow, every PayPal call, both agents, verifying a receipt yourself |
 | **License** | MIT |
 
@@ -118,7 +118,7 @@ Public pages: `/` (landing), `/docs` (how it works, PayPal APIs, verify a receip
 - **Payments v2**: get capture (PayPal's copy of `custom_id`)
 - **Disputes v1**: list, show, provide-evidence (PDF), accept-claim, escalate, sandbox require-evidence, sandbox create (`PayPal-Auth-Assertion`)
 - **Webhooks**: verify-webhook-signature; `PAYMENT.CAPTURE.COMPLETED`, `CUSTOMER.DISPUTE.CREATED/UPDATED/RESOLVED`
-- **Transaction Search**: reconciliation (counts only)
+- **Transaction Search**: optional reconciliation (`ENABLE_RECONCILE`; needs "Transaction search" enabled on the PayPal app; off on the hosted demo)
 
 The agents never hold PayPal credentials and never move money. Live PayPal is refused unless `ALLOW_LIVE=true`.
 
