@@ -11,7 +11,7 @@ Built for the PayPal AI Hackathon. **PayPal sandbox only; no real money moves.**
 | | |
 |---|---|
 | **Hosted demo** | https://relaypay-h1h0.onrender.com (the console is at `/app`) |
-| **Video** | `[paste YouTube URL here]` |
+| **Video** | https://youtu.be/i54x70OiW3k |
 | **Docs** | `/docs` on the hosted demo: the flow, every PayPal call, both agents, verifying a receipt yourself |
 | **License** | MIT |
 
